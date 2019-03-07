@@ -5,7 +5,6 @@ class Manager:
     def __init__(self, jobs, parts):
         self.jobs = jobs
         for part in parts:
-            print(part)
             size = int(part[1])
             parttable.append([size, -1])
 
@@ -18,3 +17,15 @@ class Manager:
                 return True
 
         return False
+            this.parttable.append([size, -1])
+
+
+    def tick(self):
+        for key in self.jobtable.keys():
+            job = self.jobtable[key]
+            # Reduce time remaining
+            job[1] -= 1
+            if job[1] == 0: # Job is finished
+                # Set the job's partition to be free and clear the entry from jobtable
+                self.parttable[job[0]][1] = -1
+                del self.jobtable[key]
