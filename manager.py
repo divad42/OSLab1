@@ -8,3 +8,13 @@ class Manager:
             print(part)
             size = int(part[1])
             parttable.append([size, -1])
+
+
+    def fitjob(self, job):
+        for i in range(len(parttable)):
+            if(parttable[i][1] == -1 and parttable[i][0] >= int(job[2])):
+                jobtable[job[0]] = [i, job[1]]
+                parttable[i][1] = job[0]
+                return True
+
+        return False
