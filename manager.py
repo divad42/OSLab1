@@ -12,7 +12,7 @@ class Manager:
             raise ValueError("Job number " + str(job[0]) + " already exists.")
         for i in range(len(self.parttable)):
             if(self.parttable[i][1] == -1 and self.parttable[i][0] >= int(job[2])):
-                self.jobtable[job[0]] = [i, job[1]]
+                self.jobtable[job[0]] = [i, int(job[1])]
                 self.parttable[i][1] = job[0]
                 return True
 
