@@ -15,18 +15,23 @@ class Manager:
         jobtime = int(job[1])
         jobsize = int(job[2])
 
+        # Sanity check
         if jobnum in self.jobtable.keys():
             raise ValueError("Job number", jobnum, " already exists.")
+        # Jobs larger than 9500 can't fit in any partition. No point wasting time on them.
         if jobsize > 9500:
             print("ERROR: Job", jobnum, "is too large to fit in any partition. Skipping.")
             return True
         for i in range(len(self.parttable)):
             size = self.parttable[i][0]
             usage = self.parttable[i][1]
+            # If it's empty and can fit the partition, stick it in there
             if usage == -1 and size >= jobsize:
+                # Create a job table entry and update the partition table entry
                 self.jobtable[jobnum] = [i, jobtime]
                 self.parttable[i][1] = jobnum
                 print("Fit job", jobnum, "into partition", i, "with fragmentation:", size - jobsize)
+                # Take fragmentation metric by adding leftover space
                 self.fragmentation += size - jobsize
                 return True
         return False

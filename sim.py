@@ -12,24 +12,24 @@ with open('jobtable.csv', 'r') as jobfile:
         jobs = csv.reader(jobfile, delimiter=',', quotechar='"')
         parts = csv.reader(partfile, delimiter=',', quotechar='"')
 
-        partitions = []
-
-        for part in parts:
-            partitions.append(part)
-           
-        man = Manager(partitions)
+        man = Manager(parts)
 
         # Set up some metrics
         queueLengths = []
         numjobs = 0
         waits = []
         usage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+        # Actually run the simulation
         for job in jobs:
             wait = 0
+            # Continually attempt to fit jobs into partitions
             while (not man.fitjob(job)):
+                # Take usage metric
                 for i in range(len(man.parttable)):
                     if man.parttable[i][1] != -1:
                         usage[i] += 1
+                # Since we can't yet fit another job, advance time
                 man.tick()
                 wait += 1 
                 queueLengths.append(int(job[0]) - 1) #first record the job numbers (the minus one will be helpful later)
