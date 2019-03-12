@@ -2,20 +2,33 @@ class Manager:
     """The actual class to perform the simulation. Each entry in the partition table is [size, job]. If the partition is not in use, job = -1. The job table is a dictionary storing [partition, timeRemaining]. Entries are deleted once the job completes."""
     parttable = []
     jobtable = {}
+    fragmentation = 0
+
     def __init__(self, parts):
         for part in parts:
             size = int(part[1])
             self.parttable.append([size, -1])
 
     def fitjob(self, job):
-        if job[0] in self.jobtable.keys():
-            raise ValueError("Job number " + str(job[0]) + " already exists.")
-        for i in range(len(self.parttable)):
-            if(self.parttable[i][1] == -1 and self.parttable[i][0] >= int(job[2])):
-                self.jobtable[job[0]] = [i, int(job[1])]
-                self.parttable[i][1] = job[0]
-                return True
+        # Variables for R E A D A B I L I T Y
+        jobnum = job[0]
+        jobtime = int(job[1])
+        jobsize = int(job[2])
 
+        if jobnum in self.jobtable.keys():
+            raise ValueError("Job number", jobnum, " already exists.")
+        if jobsize > 9500:
+            print("ERROR: Job", jobnum, "is too large to fit in any partition. Skipping.")
+            return True
+        for i in range(len(self.parttable)):
+            size = self.parttable[i][0]
+            usage = self.parttable[i][1]
+            if usage == -1 and size >= jobsize:
+                self.jobtable[jobnum] = [i, jobtime]
+                self.parttable[i][1] = jobnum
+                print("Fit job", jobnum, "into partition", i, "with fragmentation:", size - jobsize)
+                self.fragmentation += size - jobsize
+                return True
         return False
 
     def tick(self):

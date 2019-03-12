@@ -1,0 +1,13 @@
+Average wait time: 11.6
+Partition 1 in use for 8 ticks.
+Partition 2 in use for 10 ticks.
+Partition 3 in use for 8 ticks.
+Partition 4 in use for 5 ticks.
+Partition 5 in use for 12 ticks.
+Partition 6 in use for 11 ticks.
+Partition 7 in use for 14 ticks.
+Partition 8 in use for 16 ticks.
+Partition 9 in use for 16 ticks.
+Partition 10 in use for 16 ticks.
+Total fragmentation: 34420
+
