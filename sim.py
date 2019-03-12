@@ -20,6 +20,8 @@ with open('jobtable.csv', 'r') as jobfile:
         man = Manager(partitions)
 
         # Set up some metrics
+        queueLengths = []
+        numjobs = 0
         waits = []
         usage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for job in jobs:
@@ -30,12 +32,30 @@ with open('jobtable.csv', 'r') as jobfile:
                         usage[i] += 1
                 man.tick()
                 wait += 1 
+                queueLengths.append(int(job[0]) - 1) #first record the job numbers (the minus one will be helpful later)
             print("Wait time:", wait)
             waits.append(wait)
+            numjobs += 1
+
         print("DONE.")
         print("Metrics:")
-        print("Average wait time:", sum(usage) / 10)
+        print("Average wait time:", sum(waits) * 1.0 / len(waits))
+        noUse = 0
+        heavyUse = 0
         for i in range(len(usage)):
             print("Partition", int(i+1), "in use for", int(usage[i]), "ticks.")
+            if usage[i] == 0:
+                noUse += 1
+            elif usage[i] >= 15:
+                heavyUse += 1
+
+        print("Percent of partitions never used:", 100 * round((noUse * 1.0) / len(usage), 3))
+        print("Percent of partitions used heavily (at least 15 ticks):", 100 * round((heavyUse * 1.0) / len(usage), 3))
+
         print("Total fragmentation:", man.fragmentation)
 
+        #now that we have the total number of jobs, we can find the length of the queue at each point recorded
+        for i in range(len(queueLengths)):
+            queueLengths[i] = numjobs - queueLengths[i]
+
+        print("Average queue length per tick:", sum(queueLengths) * 1.0 / sum(waits))
